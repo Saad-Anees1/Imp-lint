@@ -3,7 +3,7 @@ def factorial(n):
     if n == 0:
         return 1
     else:
-        return n * factorial(n-1)
+        return n * factorial(n-1)    
 
 # Function to check if a number is prime
 def is_prime(num):
@@ -17,9 +17,9 @@ def is_prime(num):
 # Function to generate a list of prime numbers up to a given number
 def prime_numbers_up_to(n):
     primes = []
-    for i in range(2, n + 1):
+    for i in range(2, n + 1):  
         if is_prime(i):
-            primes.append(i)
+            primes.append(i)   
     return primes
 
 # Main block to test the functions
