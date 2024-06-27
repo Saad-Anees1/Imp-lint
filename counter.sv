@@ -7,7 +7,7 @@ module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count)
 	output logic timer_event;
 	output logic signed [31:0] count;   
 	
-	logic signed [31:0] value;
+	logic signed [31:0] value;    
 	
 	always_ff @(posedge clk)    
 	  begin
@@ -19,7 +19,7 @@ module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count)
 	   	begin
 	   	 if(load)
 	   	   count<=din;
-	   	 else if(enable & up_down)
+	   	 else if(enable & up_down)	
 	   	  begin
 				 if((count+value)>sat_count)
 				  count<=sat_count;
