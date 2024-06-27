@@ -5,11 +5,11 @@ module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count)
 	input logic [31:0] din;
 	input logic [31:0] sat_count;
 	output logic timer_event;
-	output logic signed [31:0] count;
+	output logic signed [31:0] count;   
 	
 	logic signed [31:0] value;
 	
-	always_ff @(posedge clk)
+	always_ff @(posedge clk)    
 	  begin
 	   if(~rst)
 	    begin
@@ -38,13 +38,13 @@ module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count)
 	   	   count<=count-value;
 	   	  end  
 	   	 else
-	   	    count<=count;
+	   	    count<=count;	
 	   	end   	
 	  end
 	  
-	always_comb
+	always_comb 
 	 begin
-	  case(mode)
+	  case(mode)	
 	  3'd0: value =32'd1;
 	  3'd1: value =32'd2;
 	  3'd2: value =32'd3;
