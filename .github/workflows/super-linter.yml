@@ -24,4 +24,3 @@ jobs:
           \) 
           verible-verilog-lint \
             --rules_config verible_lint.txt \
-            `cat files.txt`
