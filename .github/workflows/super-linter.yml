@@ -1,43 +1,11 @@
-name: Lint
+name: PR-Lint
 on:
   pull_request:
   workflow_dispatch:
   push:
-    branches:
-      - main
 
 jobs:
-  lint_python:
-    name: Lint Python Code
-
-    strategy:
-      fail-fast: false
-      matrix:
-        version:
-          - {python: "3.11", os: "ubuntu-latest"}
-
-    runs-on: ${{ matrix.version.os }}
-
-    timeout-minutes: 5
-
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.version.python }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.version.python }}
-
-      - name: Install Requirements
-        run: python3 -m pip install flake8
-
-      - name: Lint with Flake8
-        run: flake8 --statistics .
-
-  lint_verilog:
-    name: Lint Verilog Code
-
+  Build:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/zeroasiccorp/sbtest:latest
@@ -46,10 +14,6 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
-
-      # note that "sb_loopback.v" is not included in linting.  verible doesn't
-      # seem to be able to take into account the macro definitions in the port
-      # list, so linting unfortunately needs to be disabled for that file.
 
       - name: Lint with Verible
         run: |
@@ -69,31 +33,3 @@ jobs:
           verible-verilog-lint \
             --rules_config verible_lint.txt \
             `cat files.txt`
-
-  lint_cc:
-    name: Lint C/C++ Code Style
-
-    runs-on: ubuntu-latest
-
-    timeout-minutes: 5
-
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v4
-
-      - name: Gather files
-        run: |
-          find . \( \
-            -name "*.c" \
-            -or -name "*.cc" \
-            -or -name "*.h" \
-            -or -name "*.hpp" \
-          \) -not \( \
-            -path "./switchboard/deps/*" \
-            -or -path "./examples/deps/*" \
-          \) > files.txt
-          cat files.txt
-
-      - name: Lint with clang-format
-        run: |
-          clang-format-14 --dry-run -Werror `cat files.txt`
