@@ -1,11 +1,11 @@
 module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count);
   input logic clk,rst;
   input logic load,up_down,enable;   
-  input logic [2:0] mode;  
+  input logic [2:0] mode;    
   input logic [31:0] din;
-  input logic [31:0] sat_count;  
+  input logic [31:0] sat_count;   
   output logic timer_event;
-  output logic signed [31:0] count;
+  output logic signed [31:0] count;  
   logic signed [31:0] value;
 
   always_ff @(posedge clk) begin
