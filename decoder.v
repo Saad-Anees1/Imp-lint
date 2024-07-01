@@ -2,9 +2,8 @@
 module decoder(din,en,d0,d1,d2,d3,d4,d5,d6,d7);
   input [2:0]din;
   input en;
-  output reg d0,d1,d2,d3,d4,d5,d6,d7;    
-  
-  always @(*)    
+  output reg d0,d1,d2,d3,d4,d5,d6,d7;
+  always @(*)
     begin
       if(en)
         begin
@@ -24,5 +23,3 @@ module decoder(din,en,d0,d1,d2,d3,d4,d5,d6,d7);
       {d0,d1,d2,d3,d4,d5,d6,d7}=8'b0;
     end
 endmodule
-        
-  
