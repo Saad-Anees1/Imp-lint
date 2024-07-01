@@ -1,32 +1,99 @@
 name: Lint
-
-on:  # yamllint disable-line rule:truthy
-  push:
+on:
   pull_request:
-
-permissions: { }
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
-    name: Lint
-    runs-on: ubuntu-latest
+  lint_python:
+    name: Lint Python Code
 
-    permissions:
-      contents: read
-      packages: read
-      # To report GitHub Actions status checks
-      statuses: write
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - {python: "3.11", os: "ubuntu-latest"}
+
+    runs-on: ${{ matrix.version.os }}
+
+    timeout-minutes: 5
 
     steps:
-      - name: Checkout code
+      - name: Check out Git repository
         uses: actions/checkout@v4
-        with:
-          # super-linter needs the full git history to get the
-          # list of files that changed across commits
-          fetch-depth: 0
 
-      - name: Super-linter
-        uses: super-linter/super-linter@v6.6.0  # x-release-please-version
-        env:
-          # To report GitHub Actions status checks
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Python ${{ matrix.version.python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.version.python }}
+
+      - name: Install Requirements
+        run: python3 -m pip install flake8
+
+      - name: Lint with Flake8
+        run: flake8 --statistics .
+
+  lint_verilog:
+    name: Lint Verilog Code
+
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/zeroasiccorp/sbtest:latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      # note that "sb_loopback.v" is not included in linting.  verible doesn't
+      # seem to be able to take into account the macro definitions in the port
+      # list, so linting unfortunately needs to be disabled for that file.
+
+      - name: Lint with Verible
+        run: |
+          find . \( \
+            -name "*.v" \
+            -or -name "*.sv" \
+            -or -name "*.vh" \
+            -or -name "*.svh" \
+          \) -not \( \
+            -path "./switchboard/deps/*" \
+            -or -path "./examples/deps/*" \
+            -or -name "axil_interconnect_wrap_1x2.v" \
+            -or -name "picorv32.v" \
+            -or -name "sb_loopback.v" \
+          \) > files.txt
+          cat files.txt
+          verible-verilog-lint \
+            --rules_config verible_lint.txt \
+            `cat files.txt`
+
+  lint_cc:
+    name: Lint C/C++ Code Style
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Gather files
+        run: |
+          find . \( \
+            -name "*.c" \
+            -or -name "*.cc" \
+            -or -name "*.h" \
+            -or -name "*.hpp" \
+          \) -not \( \
+            -path "./switchboard/deps/*" \
+            -or -path "./examples/deps/*" \
+          \) > files.txt
+          cat files.txt
+
+      - name: Lint with clang-format
+        run: |
+          clang-format-14 --dry-run -Werror `cat files.txt`
