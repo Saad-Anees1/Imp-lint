@@ -17,6 +17,7 @@ module decoder(din,en,d0,d1,d2,d3,d4,d5,d6,d7);
           3'b101: d5=1'b1;
           3'b110: d6=1'b1;
           3'b111: d7=1'b1;
+          default:;
         endcase
     end
       else
