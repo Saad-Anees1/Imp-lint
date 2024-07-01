@@ -21,6 +21,8 @@ jobs:
             -or -name "*.sv" \
             -or -name "*.vh" \
             -or -name "*.svh" \
-          \) 
+          \) \
+          cat files.txt
           verible-verilog-lint \
             --rules_config verible_lint.txt \
+            `cat files.txt`
