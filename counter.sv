@@ -1,15 +1,15 @@
 module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count);
 	input logic clk,rst;
-	input logic load,up_down,enable;  
+	input logic load,up_down,enable;
 	input logic [2:0] mode;
 	input logic [31:0] din;
 	input logic [31:0] sat_count;
 	output logic timer_event;
 	output logic signed [31:0] count;     
-	
-	logic signed [31:0] value;    
-	
-	always_ff @(posedge clk)    
+
+	logic signed [31:0] value;
+
+	always_ff @(posedge clk) 
 	  begin
 	   if(~rst)
 	    begin
@@ -19,7 +19,7 @@ module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count)
 	   	begin
 	   	 if(load)
 	   	   count<=din;
-	   	 else if(enable & up_down)	
+	   	 else if(enable & up_down)
 	   	  begin
 				 if((count+value)>sat_count)
 				  count<=sat_count;
@@ -36,15 +36,15 @@ module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count)
 	   	   	 count<=0;
 	   	   else
 	   	   count<=count-value;
-	   	  end  
+	   	  end
 	   	 else
-	   	    count<=count;	
-	   	end   	
+	   	    count<=count;
+	   	end
 	  end
-	  
-	always_comb 
+
+	always_comb
 	 begin
-	  case(mode)	
+	  case(mode)
 	  3'd0: value =32'd1;
 	  3'd1: value =32'd2;
 	  3'd2: value =32'd3;
@@ -56,7 +56,6 @@ module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count)
 	  default value=32'd0;
 	  endcase
 	 end
-	
+
 	assign timer_event = (~rst)?(1'b0):((up_down)?((count==sat_count)?1'b1:1'b0):((count==0)?1'b1:1'b0));
- 
 endmodule
