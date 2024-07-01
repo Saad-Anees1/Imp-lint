@@ -22,6 +22,7 @@ jobs:
             -or -name "*.vh" \
             -or -name "*.svh" \
           \)
+          > files.txt
           cat files.txt
           verible-verilog-lint \
             --rules_config verible_lint.txt \
