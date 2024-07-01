@@ -5,7 +5,7 @@ module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count)
   input logic [31:0] din;
   input logic [31:0] sat_count;
   output logic timer_event;
-  output logic signed [31:0] count;     
+  output logic signed [31:0] count;
   logic signed [31:0] value;
 
   always_ff @(posedge clk) begin
@@ -48,5 +48,6 @@ always_comb begin
     default value=32'd0;
   endcase
 end
-assign timer_event = (~rst)?(1'b0):((up_down)?((count==sat_count)?1'b1:1'b0):((count==0)?1'b1:1'b0));
+assign timer_event = (~rst)?(1'b0):((up_down)?((count==sat_count)?1'b1:1'b0)
+                      :((count==0)?1'b1:1'b0));
 endmodule
