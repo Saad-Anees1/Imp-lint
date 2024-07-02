@@ -1,4 +1,4 @@
-module counter(rst,clk,mode,load,din,up_down,sat_count,enable,timer_event,count);
+module counter(rst,clk,mode,load,din,up_down, sat_count, enable, timer_event, count);
   input logic clk,rst;
   input logic load,up_down,enable;
   input logic [2:0] mode;
