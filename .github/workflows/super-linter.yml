@@ -26,3 +26,6 @@ jobs:
           verible-verilog-lint \
             --rules_config verible_lint.txt \
             `cat files.txt`
+        env:
+          # To report GitHub Actions status checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
